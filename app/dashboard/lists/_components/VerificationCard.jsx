@@ -67,8 +67,8 @@ const VerificationCard = ({ VerificationData, index }) => {
             {index + 1}. {VerificationData?.applicantName}
           </Link>
 
-          <p className="text-sm text-gray-500">
-            Phone No: {VerificationData?.phoneNumber}
+          <p className="text-xs text-gray-500">
+            Time: {VerificationData?.urlLink}
           </p>
 
           <span
