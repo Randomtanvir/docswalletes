@@ -4,6 +4,7 @@ import CandidateDetails from "./CandidateDetails";
 import VerificationDetails from "./VerificationDetails";
 import DocumentDetails from "./DocumentDetails";
 import TransactionDetails from "./TransactionDetails";
+import Image from "next/image";
 
 const DigitalAttestationResult = ({ verificationData }) => {
   return (
@@ -13,11 +14,23 @@ const DigitalAttestationResult = ({ verificationData }) => {
         <div className="flex justify-between items-center">
           {/* Left Logo */}
           <div className="flex items-center">
-            <img src="/logo1.png" alt="Oman Post" className="" />
+            <Image
+              width={200}
+              height={100}
+              src="/logo1.png"
+              alt="Oman Post"
+              className=""
+            />
           </div>
           {/* Right Logo */}
           <div>
-            <img src="/logo2.png" alt="Ministry Logo" className="" />
+            <Image
+              width={100}
+              height={100}
+              src="/logo2.png"
+              alt="Ministry Logo"
+              className=""
+            />
           </div>
         </div>
 
