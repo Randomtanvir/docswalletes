@@ -67,14 +67,39 @@ export async function POST(request) {
   }
 }
 
-export async function GET(_request) {
+export async function GET(request) {
   try {
     await connectMongo();
-    const verificationInfo = await VerificationModel.find({}).sort({
-      createdAt: -1,
-    });
+
+    // 🔹 Extract search params (default: page=1, limit=10)
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get("page")) || 1;
+    const limit = parseInt(searchParams.get("limit")) || 10;
+    const skip = (page - 1) * limit;
+
+    // 🔹 Fetch data with pagination
+    const verificationInfo = await VerificationModel.find({})
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // 🔹 Count total documents for pagination meta
+    const totalDocs = await VerificationModel.countDocuments();
+    const totalPages = Math.ceil(totalDocs / limit);
+
     return NextResponse.json(
-      { message: "✅ Applications fetched successfully", verificationInfo },
+      {
+        message: "✅ Applications fetched successfully",
+        verificationInfo,
+        pagination: {
+          totalDocs,
+          totalPages,
+          currentPage: page,
+          pageSize: limit,
+          hasNextPage: page < totalPages,
+          hasPrevPage: page > 1,
+        },
+      },
       { status: 200 }
     );
   } catch (error) {
