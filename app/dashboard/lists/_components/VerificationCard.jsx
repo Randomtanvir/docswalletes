@@ -57,7 +57,7 @@ const VerificationCard = ({ VerificationData, index }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-2">
+    <div className="flex flex-col mt-2 items-center justify-center gap-2">
       <div className="p-4 w-full max-w-xl border rounded-lg shadow flex justify-between items-center bg-white hover:shadow-lg transition">
         <div>
           <Link
@@ -68,7 +68,10 @@ const VerificationCard = ({ VerificationData, index }) => {
           </Link>
 
           <p className="text-xs text-gray-500">
-            Time: {VerificationData?.urlLink}
+            URL: {VerificationData?.urlLink}
+          </p>
+          <p className="text-xs mt-1 text-gray-500">
+            Time: {VerificationData?.verificationDateTime}
           </p>
 
           <span

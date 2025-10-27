@@ -16,7 +16,7 @@ const DocumentDetails = ({ verificationData }) => {
             <td className="border border-black w-[35%] font-sans p-[3px] text-[16px] font-normal text-black ">
               Original Document
             </td>
-            <td className="border border-black text-[#1B6394] font-semibold ">
+            <td className="border italic border-black text-[#1B6394] font-semibold ">
               <Link
                 href={`/document/show/${verificationData?.urlNumber}/product`}
                 // target="_blank"
@@ -30,7 +30,7 @@ const DocumentDetails = ({ verificationData }) => {
             <td className="border border-black w-[35%] font-sans p-[3px] text-[16px] font-normal text-black ">
               Attested Document
             </td>
-            <td className="border border-black text-[#1B6394] font-semibold ">
+            <td className="border border-black text-[#1B6394] font-semibold italic">
               <Link
                 href={`/document/show/${verificationData?.urlNumber}/portfolio`}
                 // target="_blank"

@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 // ✅ This is a Server Component
 const ListsPage = async ({ searchParams }) => {
   const page = parseInt(searchParams.page) || 1;
-  const limit = 8;
+  const limit = 10;
 
   const { verificationInfo, pagination } = await getAllVerificationData(
     page,
