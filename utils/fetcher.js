@@ -25,23 +25,19 @@ export const getSingleVerificationData = async (id) => {
   }
 };
 export const getSingleVerificationDataByURLLINK = async (url) => {
-  try {
-    // Use a private env variable for server calls
-    const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
-    if (!apiUrl) throw new Error("Missing API_URL environment variable");
+  const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
 
-    const response = await fetch(`${apiUrl}/${url}`, {
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      throw new Error(`Fetch failed with status ${response.status}`);
+  for (let i = 0; i < 2; i++) {
+    try {
+      const response = await fetch(`${apiUrl}/${url}`, { cache: "no-store" });
+      if (response.ok) {
+        const data = await response.json();
+        return data?.application || {};
+      }
+    } catch (err) {
+      if (i === 1) throw err; // দ্বিতীয়বারেও fail হলে throw করো
     }
-
-    const data = await response.json();
-    return data?.application || {};
-  } catch (error) {
-    console.error("Server fetch error:", error.message);
-    return { error: true, message: error.message };
   }
+
+  return { error: true, message: "Data fetch error" };
 };
