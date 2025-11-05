@@ -14,6 +14,14 @@ const ListsPage = async ({ searchParams }) => {
     limit
   );
 
+  if (verificationInfo?.length < 0) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <span className="loader"></span>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-3xl mx-auto p-4">
       <Link

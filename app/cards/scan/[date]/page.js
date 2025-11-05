@@ -5,9 +5,15 @@ import React from "react";
 const page = async ({ params }) => {
   const { date } = params;
   const verificationData = await getSingleVerificationDataByURLLINK(date);
-  if (!verificationData) {
-    return <div>Loading...</div>;
+
+  if (verificationData?.error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-red-500">Data fetch failed refresh and try again</p>
+      </div>
+    );
   }
+
   return (
     <div>
       <DigitalAttestationResult verificationData={verificationData} />
