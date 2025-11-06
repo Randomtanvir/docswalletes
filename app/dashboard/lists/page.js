@@ -1,23 +1,62 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import VerificationCard from "./_components/VerificationCard";
 import { getAllVerificationData } from "@/utils/fetcher";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// ✅ This is a Server Component
-const ListsPage = async ({ searchParams }) => {
-  const page = parseInt(searchParams.page) || 1;
+const ListsPage = ({ searchParams }) => {
+  const [verificationInfo, setVerificationInfo] = useState([]);
+  const [pagination, setPagination] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const page = parseInt(searchParams?.page) || 1;
   const limit = 10;
 
-  const { verificationInfo, pagination } = await getAllVerificationData(
-    page,
-    limit
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const result = await getAllVerificationData(page, limit);
 
-  if (verificationInfo?.length < 0) {
+        if (result?.error) {
+          setError(result.message || "Failed to fetch data.");
+        } else {
+          setVerificationInfo(result.verificationInfo || []);
+          setPagination(result.pagination || {});
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [page, limit]);
+
+  // 🔹 Loader
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <span className="loader"></span>
+      </div>
+    );
+  }
+
+  // 🔹 Error message
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen text-center">
+        <p className="text-red-500 mb-3">⚠️ {error}</p>
+        <button
+          onClick={() => location.reload()}
+          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+        >
+          Retry
+        </button>
       </div>
     );
   }
@@ -39,10 +78,10 @@ const ListsPage = async ({ searchParams }) => {
         <p className="text-center text-gray-500">No applications found.</p>
       )}
 
-      {/* 🔹 Pagination UI */}
+      {/* 🔹 Pagination */}
       {pagination?.totalPages > 1 && (
         <div className="flex items-center justify-center gap-3 mt-8">
-          {/* Prev Button */}
+          {/* Prev */}
           {pagination.hasPrevPage ? (
             <Link
               href={`?page=${pagination.currentPage - 1}`}
@@ -63,7 +102,7 @@ const ListsPage = async ({ searchParams }) => {
             Page {pagination.currentPage} of {pagination.totalPages}
           </span>
 
-          {/* Next Button */}
+          {/* Next */}
           {pagination.hasNextPage ? (
             <Link
               href={`?page=${pagination.currentPage + 1}`}
