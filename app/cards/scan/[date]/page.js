@@ -25,11 +25,18 @@ export default function Page({ params }) {
     getData();
   }, [date]);
 
+  // 🔹 Error message
   if (error) {
     return (
-      <p className="text-red-500 text-center mt-10">
-        Network slow. Retrying...
-      </p>
+      <div className="flex flex-col items-center justify-center h-screen text-center">
+        <p className="text-red-500 mb-3">⚠️ Network slow. Retrying...</p>
+        <button
+          onClick={() => location.reload()}
+          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+        >
+          Retry
+        </button>
+      </div>
     );
   }
 
