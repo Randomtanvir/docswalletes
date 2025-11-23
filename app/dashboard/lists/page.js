@@ -1,62 +1,31 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
 import VerificationCard from "./_components/VerificationCard";
 import { getAllVerificationData } from "@/utils/fetcher";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const ListsPage = ({ searchParams }) => {
-  const [verificationInfo, setVerificationInfo] = useState([]);
-  const [pagination, setPagination] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+// ⭐ This is a SERVER COMPONENT (no "use client")
 
+export default async function ListsPage({ searchParams }) {
   const page = parseInt(searchParams?.page) || 1;
   const limit = 10;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const result = await getAllVerificationData(page, limit);
+  // Fetch data on the server
+  const result = await getAllVerificationData(page, limit);
 
-        if (result?.error) {
-          setError(result.message || "Failed to fetch data.");
-        } else {
-          setVerificationInfo(result.verificationInfo || []);
-          setPagination(result.pagination || {});
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const verificationInfo = result?.verificationInfo || [];
+  const pagination = result?.pagination || {};
+  const error = result?.error ? result?.message : null;
 
-    fetchData();
-  }, [page, limit]);
-
-  // 🔹 Loader
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <span className="loader"></span>
-      </div>
-    );
-  }
-
-  // 🔹 Error message
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-screen text-center">
         <p className="text-red-500 mb-3">⚠️ {error}</p>
-        <button
-          onClick={() => location.reload()}
+        <Link
+          href="/lists"
           className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
         >
           Retry
-        </button>
+        </Link>
       </div>
     );
   }
@@ -70,7 +39,8 @@ const ListsPage = ({ searchParams }) => {
         HOME
       </Link>
 
-      {verificationInfo?.length > 0 ? (
+      {/* Results */}
+      {verificationInfo.length > 0 ? (
         verificationInfo.map((veri, i) => (
           <VerificationCard key={veri._id} index={i} VerificationData={veri} />
         ))
@@ -78,7 +48,7 @@ const ListsPage = ({ searchParams }) => {
         <p className="text-center text-gray-500">No applications found.</p>
       )}
 
-      {/* 🔹 Pagination */}
+      {/* Pagination */}
       {pagination?.totalPages > 1 && (
         <div className="flex items-center justify-center gap-3 mt-8">
           {/* Prev */}
@@ -121,6 +91,4 @@ const ListsPage = ({ searchParams }) => {
       )}
     </div>
   );
-};
-
-export default ListsPage;
+}
